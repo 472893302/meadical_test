@@ -1,0 +1,150 @@
+<script src="js/getParameter.js"></script>
+<script>
+
+    $(function () {
+        var user;
+        //查询用户信息
+        $.get("user/findOne",{},function (data) {
+            // {uid:1,name:'hua'}
+            user = data;
+            var msg = "欢迎回来, "+data.name;
+            $("#span-username").html(msg)
+        });
+
+        //查询分类数据
+        $.get("category/findAll",{},function (data) {
+            // [{cid:1,cname:xxx},{},{}]
+            var str ='<li class="nav-active"><a href="index.html">首页</a></li>';
+            //遍历数组,字符串拼接<li><a href="route_list.html">门票</a></li>
+            for (var i = 0;i<data.length;i++){
+                var li = '<li><a href="route_list.html?cid='+data[i].cid+'">'+data[i].cname+'</a></li>';
+                str+=li;
+            }
+            //拼接收藏排行榜(最后一部分)
+            str+='<li><a href="favoriterank.html">收藏排行榜</a></li>';
+            //将str设置到ul的html内容中
+            $("#category").html(str);
+
+        })
+        //给搜索按钮绑定单击事件,获取搜索输入框的内容
+        $("#search_button").click(function () {
+            //用户输入的线路名称
+            var rname = $("#search_input").val();
+
+           /* location.href = "http://localhost:8090/webmvn_war_exploded/route_list.html?cid="+cid+"&rname="+rname;*/
+            location.href = "http://localhost:8090/webmvn_war_exploded/route_list.html?cid=5&rname="+rname;
+        })
+        //点击我的收藏
+        judgeUser = function (){
+            //未登录
+            if(user == null){
+                alert("您尚未登录,请登录!")
+                location.href = "http://localhost:8090/webmvn_war_exploded/login.html";
+            }else{
+                //已登录a
+                // alert(user.uid);
+                var uid = user.uid;
+                //跳转到我的收藏页面
+                location.href = "http://localhost:8090/webmvn_war_exploded/myfavorite.html?uid="+uid;
+            }
+        }
+    })
+</script>
+<style>
+    .paddtop{
+        padding-top: 10px;
+    }
+    .search-button{
+        float:left;
+        border: 1px solid #ffc900;
+        width:50px;
+        height:35px;
+        background-color: #ffc900;
+        text-align: left;
+        line-height: 35px;
+        margin-top: 15px;
+    }
+    .search-input{
+        float:left;
+        border: 2px solid #ffc900;
+        width:350px;
+        height:35px;
+        padding-left: 10px;
+        margin-top: 15px;
+    }
+    .deng a{
+        float:right;
+        width:65px;
+        height:35px;
+        margin-top: 20px;
+        color: #3d3d3f;
+        font-size: 10px
+
+    }
+    .guan a{
+        float:right;
+        width:60px;
+        height:35px;
+        margin-top: 20px;
+        color: #3d3d3f;
+        font-size: 10px
+
+    }
+    .tui a{
+        float:right;
+        width:65px;
+        height:35px;
+        margin-top: 20px;
+        color: #3d3d3f;
+        font-size: 10px
+    }
+    .top{
+        margin-top: 1px;
+    }
+    .top_1{
+        float: right;
+    }
+
+    .top_1 span{
+        float:right;
+        width:200px;
+        height:15px;
+        color:#ffc900;
+        font-size: 5px
+    }
+</style>
+<header id="header" class="container-fluid">
+    <div class="row paddtop">
+        <div class="col-md-2">
+            <img src="images/旅游logo_爱奇艺1.jpg"  class="img-responsive">
+        </div>
+        <div class="col-md-5 ">
+            <div class="search">
+                <input name="" type="text" id="search_input" placeholder="请输入路线名称" class="search-input" autocomplete="off">
+                <a href="javascript:;" id="search_button" class="search-button">搜索</a>
+            </div>
+        </div>
+        <div class="col-md-2 deng">
+            <a href="login.html">登录</a>
+            <a href="register.html">注册</a>
+        </div>
+
+        <div class="col-md-1 guan">
+            <a href="G_login.html">管理员登录</a>
+        </div>
+
+        <div class="col-md-2 tui">
+            <a href="javascript:location.href='http://localhost:8090/webmvn_war_exploded/user/exit?';">退出</a>
+            <a href="myfavorite.html" class="collection">我的收藏</a>
+        </div>
+        <div class="row top" >
+            <div class="col-md-2 top_1">
+                <span id="span-username"></span>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="navitem">
+    <ul id="category" class="nav">
+    </ul>
+</div>
